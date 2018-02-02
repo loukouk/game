@@ -1,35 +1,52 @@
 #ifndef GAME_BLOCK_H
 #define GAME_BLOCK_H
 
-//terraria-like 2d game where abunch of blocks spawn random
-//subclasses: solid liquid gas blocks
-//solids hard, but can collapse
-//liquid fall but volume is constant
-//gas expands to take all open volume but loses effectiveness
-//player must reach gold avoiding dying suffocation/drowning/collapse to win
 
+#define NUM_BLOCK_TYPES 9
+#define IS_SOLID(...) (__VA_ARGS__>=0&&__VA_ARGS__<3)
+#define IS_LIQUID(...) (__VA_ARGS__>=3&&__VA_ARGS__<6)
+#define IS_GAS(...) (__VA_ARGS__>=6&&__VA_ARGS__<NUM_BLOCK_TYPES)
 
-class Block {
-	int xpos;
-	int ypos;
-	Block * top;
-	Block * bot;
-	Block * left;
-	Block * right;
+#define MOVE_UP 1
+#define MOVE_DOWN 2
+#define MOVE_LEFT 3
+#define MOVE_RIGHT 4
+
+class Block{
+
+	protected:
+		int id;
 
 	public:
-		void set_xpos(int x);
-		void set_ypos(int y);
-		void set_top(Block *addr);
-		void set_bot(Block *addr);
-		void set_left(Block *addr);
-		void set_right(Block *addr);
-		int get_xpos();
-		int get_ypos();
-		Block *get_top();
-		Block *get_bot();
-		Block *get_left();
-		Block *get_right();
+		Block();
+		Block(int id);
+		int get_id();
+};
+
+class Solid : public Block{
+	int strength;
+
+	public:
+		using Block::Block;
+};
+
+class Liquid : public Block{
+	int flowrate;
+
+	public:
+		using Block::Block;
+};
+
+class Gas : public Block{
+	int density;
+
+	public:
+		using Block::Block;
+};
+
+class EmptyBlock : public Block{
+	public:
+		EmptyBlock();
 };
 
 
