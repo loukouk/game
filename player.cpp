@@ -1,59 +1,62 @@
-#include "player.h"
+#include "player.hpp"
 
 
+// TODO: Harvest block, blocked by terrain...
 int Player::move_to(Chunk *ch, int x, int y)
 {
 	Block *dest = ch->get_block(x, y);
 
 	delete dest;
 	ch->assign_ptr(x, y, this);
-	cur_chunk->assign_ptr(xpos, ypos, new EmptyBlock);
+	cur_chunk->assign_ptr(block_xpos, block_ypos, new EmptyBlock);
+	cur_chunk = ch;
 }
 
+//TODO: what if move_to() fails??
 int Player::move(int direction)
 {
 	if (direction == MOVE_UP) {
-		if (ypos >= CHUNK_SIZE_Y-1) {
-			move_to(cur_chunk->get_top(), xpos, 0);
-			ypos = 0;
-			cur_chunk = cur_chunk->get_top();
+		if (block_ypos >= CHUNK_SIZE_Y-1) {
+			move_to(u->get_chunk(chunk_xpos, chunk_ypos+1), block_xpos, 0);
+			block_ypos = 0;
+			chunk_ypos++;
 		}
 		else {
-			move_to(cur_chunk, xpos, ypos+1);
-			ypos++;
+			move_to(cur_chunk, block_xpos, block_ypos+1);
+			block_ypos++;
 		}
 	}
 	if (direction == MOVE_DOWN) {
-		if (ypos <= 0) {
-			move_to(cur_chunk->get_bot(), xpos, CHUNK_SIZE_Y-1);
-			ypos = CHUNK_SIZE_Y-1;
-			cur_chunk = cur_chunk->get_bot();
+		if (block_ypos <= 0) {
+			move_to(u->get_chunk(chunk_xpos, chunk_ypos-1), block_xpos, CHUNK_SIZE_Y-1);
+			block_ypos = CHUNK_SIZE_Y-1;
+			chunk_ypos--;
 		}
 		else {
-			move_to(cur_chunk, xpos, ypos-1);
-			ypos--;
+			move_to(cur_chunk, block_xpos, block_ypos-1);
+			block_ypos--;
 		}
 	}
 	if (direction == MOVE_LEFT) {
-		if (xpos <= 0) {
-			move_to(cur_chunk->get_left(), CHUNK_SIZE_X-1, ypos);
-			xpos = CHUNK_SIZE_X-1;
-			cur_chunk = cur_chunk->get_left();
+		if (block_xpos <= 0) {
+			move_to(u->get_chunk(chunk_xpos-1, chunk_ypos), CHUNK_SIZE_X-1, block_ypos);
+			block_xpos = CHUNK_SIZE_X-1;
+			chunk_xpos--;
 		}
 		else {
-			move_to(cur_chunk, xpos-1, ypos);
-			xpos--;
+			move_to(cur_chunk, block_xpos-1, block_ypos);
+			block_xpos--;
 		}
 	}
 	if (direction == MOVE_RIGHT) {
-		if (xpos >= CHUNK_SIZE_X-1) {
-			move_to(cur_chunk->get_right(), 0, ypos);
-			xpos = 0;
-			cur_chunk = cur_chunk->get_right();
+		if (block_xpos >= CHUNK_SIZE_X-1) {
+			move_to(u->get_chunk(chunk_xpos+1, chunk_ypos), 0, block_ypos);
+			block_xpos = 0;
+			chunk_xpos++;
 		}
 		else {
-			move_to(cur_chunk, xpos+1, ypos);
-			xpos++;
+			move_to(cur_chunk, block_xpos+1, block_ypos);
+			block_xpos++;
 		}
 	}
 }
@@ -66,7 +69,7 @@ int Player::play()
 
 		cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" << endl;
 		print_chunk();
-		cout << "\nplayer x,y: " << xpos << "," << ypos << endl;
+		cout << "\nplayer x,y: " << block_xpos << "," << block_ypos << endl;
 
 		cout << endl << "> ";
 		fgets(buf, 8, stdin);
@@ -78,8 +81,8 @@ int Player::play()
 			move(MOVE_LEFT);
 		else if (!strcmp(buf, "r\n") || !strcmp(buf, "right\n"))
 			move(MOVE_RIGHT);
-		else if (!strcmp(buf, "h\n")) {
-		}
+		else if (!strcmp(buf, "exit\n") || !strcmp(buf, "quit\n"))
+			break;
 	}
 	return 0;
 }
@@ -91,35 +94,29 @@ void Player::print_chunk()
 
 int Player::get_xpos()
 {
-	return xpos;
+	return block_xpos;
 }
 
 int Player::get_ypos()
 {
-	return ypos;
+	return block_ypos;
 }
 
-Player::Player()
-{
-	id = -1;
-
-	for (int i = 0; i < NUM_BLOCK_TYPES; i++) {
-		inventory[i] = 0;
-	}
-}
-
-Player::Player(int x, int y, Chunk *cur)
+Player::Player(Universe *u_ptr)
 {
 	Block *temp;
 
 	id = -1;
-	xpos = x;
-	ypos = y;
-	cur_chunk = cur;
+	u = u_ptr;
+	chunk_xpos = 0;
+	chunk_ypos = 0;
 
-	temp = cur->get_block(x,y);
+	temp = u->get_spawn(block_xpos, block_ypos);
+	cur_chunk = u->get_chunk(0,0);
+
+	temp = cur_chunk->get_block(block_xpos,block_ypos);
 	delete temp;
-	cur->assign_ptr(x, y, this);
+	cur_chunk->assign_ptr(block_xpos, block_ypos, this);
 
 	for (int i = 0; i < NUM_BLOCK_TYPES; i++) {
 		inventory[i] = 0;
@@ -135,4 +132,4 @@ int Player::add_to_inventory(int item, int amount)
 	inventory[item] += amount;
 	return 0;
 }
-	
+

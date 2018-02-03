@@ -1,13 +1,12 @@
 #ifndef GAME_UNIVERSE_H
 #define GAME_UNIVERSE_H
 
-#include "chunk.h"
-#include "block.h"
-#include "player.h"
+#include "chunk.hpp"
+#include "block.hpp"
+#include "double_vec.hpp"
 
 class Universe{
-	Player *player;
-	Chunk *origin;
+	DoubleVector< DoubleVector<Chunk *> > *chunkmap;
 	int spawn_xpos;
 	int spawn_ypos;
 	int chunk_count;
@@ -15,8 +14,7 @@ class Universe{
 	public:
 		Universe();
 		Universe(int x, int y);		//xy coordinates of spawnpoint
-		int play();
-		Chunk *get_origin();
+		Chunk *get_chunk(int x, int y);
 		Block *get_spawn(int& x, int& y);
 		void print_cur_chunk();
 		int get_chunk_count();

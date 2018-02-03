@@ -3,10 +3,10 @@
 #include <cstdlib>
 #include <cstddef>
 
-#include "block.h"
-#include "chunk.h"
-#include "player.h"
-#include "universe.h"
+#include "block.hpp"
+#include "chunk.hpp"
+#include "player.hpp"
+#include "universe.hpp"
 
 using std::cout;
 using std::endl;
@@ -15,5 +15,6 @@ int main ()
 {
 	srand(time(NULL));
 	Universe u;
-	return u.play();
+	Player p1(&u);
+	return p1.play();
 }

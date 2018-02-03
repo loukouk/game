@@ -1,4 +1,4 @@
-#include "chunk.h"
+#include "chunk.hpp"
 
 matrix Chunk::create_blocks(int xsz, int ysz)
 {
@@ -23,43 +23,7 @@ matrix Chunk::create_blocks(int xsz, int ysz)
 
 Chunk::Chunk()
 {
-	xpos = 0;
-	ypos = 0;
-	top = nullptr;
-	bot = nullptr;
-	left = nullptr;
-	right = nullptr;
 	blocks = create_blocks(CHUNK_SIZE_X, CHUNK_SIZE_Y);
-}
-
-Chunk::Chunk(int x, int y)
-{
-	xpos = x;
-	ypos = y;
-	top = nullptr;
-	bot = nullptr;
-	left = nullptr;
-	right = nullptr;
-	blocks = create_blocks(CHUNK_SIZE_X, CHUNK_SIZE_Y);
-}
-
-Chunk::Chunk(int x, int y, Chunk *t, Chunk *b, Chunk *l, Chunk *r)
-{
-	xpos = x;
-	ypos = y;
-	set_top(t);
-	set_bot(b);
-	set_left(l);
-	set_right(r);
-	blocks = create_blocks(CHUNK_SIZE_X, CHUNK_SIZE_Y);
-}
-
-Chunk::~Chunk()
-{
-	if (top != nullptr) top->bot = nullptr;
-	if (bot != nullptr) bot->top = nullptr;
-	if (left != nullptr) left->right = nullptr;
-	if (right != nullptr) right->left = nullptr;
 }
 
 Block *Chunk::get_block(int x, int y)
@@ -101,68 +65,3 @@ void Chunk::print_chunk()
 		cout << endl;
 	}
 }
-
-void Chunk::set_xpos(int x) 
-{
-	xpos = x;
-}
-
-void Chunk::set_ypos(int y) 
-{
-	ypos = y;
-}
-
-void Chunk::set_top(Chunk *addr) 
-{
-	top = addr;
-	if (addr != nullptr) addr->bot = this;
-}
-
-void Chunk::set_bot(Chunk *addr) 
-{
-	bot = addr;
-	if (addr != nullptr) addr->top = this;
-}
-
-void Chunk::set_left(Chunk *addr) 
-{
-	left = addr;
-	if (addr != nullptr) addr->right = this;
-}
-
-void Chunk::set_right(Chunk *addr) 
-{
-	right = addr;
-	if (addr != nullptr) addr->left = this;
-}
-
-int Chunk::get_xpos() 
-{
-	return xpos;
-}
-
-int Chunk::get_ypos() 
-{
-	return ypos;
-}
-
-Chunk *Chunk::get_top() 
-{
-	if (top == nullptr) {
-		Chunk *temp = new Chunk;		
-	}
-	return top;
-}
-
-Chunk *Chunk::get_bot() {
-	return bot;
-}
-
-Chunk *Chunk::get_left() {
-	return left;
-}
-
-Chunk *Chunk::get_right() {
-	return right;
-}
-

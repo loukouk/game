@@ -1,5 +1,5 @@
-#include "universe.h"
-
+#include "universe.hpp"
+#include <iostream>
 
 Universe::Universe() {
 	int x, y;
@@ -7,41 +7,37 @@ Universe::Universe() {
 	x = rand() % CHUNK_SIZE_X;
 	y = rand() % CHUNK_SIZE_Y;
 
-	origin = new Chunk;
+	chunkmap = new DoubleVector< DoubleVector<Chunk *> >;
+	(*chunkmap)[0][0] = new Chunk;
 	chunk_count = 1;
 	spawn_xpos = x;
 	spawn_ypos = y;
-	player = new Player(x,y,origin);
 }
 
 Universe::Universe(int x, int y)
 {
-	origin = new Chunk;
+	chunkmap = new DoubleVector< DoubleVector<Chunk *> >;
+	(*chunkmap)[0][0] = new Chunk;
 	chunk_count = 1;
 	spawn_xpos = x;
 	spawn_ypos = y;
-	player = new Player(x,y,origin);
 }
 
-int Universe::play()
+Chunk *Universe::get_chunk(int x, int y)
 {
-	return player->play();
-}
-
-Chunk *Universe::get_origin()
-{
-	return origin;
+	Chunk *ret = (*chunkmap)[x][y];
+	if (ret == 0) {
+		ret = new Chunk;
+		(*chunkmap)[x][y] = ret;
+	}
+	return ret;
 }
 
 Block *Universe::get_spawn(int& x, int& y)
 {
 	x = spawn_xpos;
 	y = spawn_ypos;
-}
-
-void Universe::print_cur_chunk()
-{
-	player->print_chunk();
+	return ((*chunkmap)[0][0]->get_block(x,y));
 }
 
 int Universe::get_chunk_count()
