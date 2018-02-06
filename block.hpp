@@ -2,10 +2,10 @@
 #define GAME_BLOCK_H
 
 
-#define NUM_BLOCK_TYPES 9
-#define IS_SOLID(...) (__VA_ARGS__>=0&&__VA_ARGS__<3)
-#define IS_LIQUID(...) (__VA_ARGS__>=3&&__VA_ARGS__<6)
-#define IS_GAS(...) (__VA_ARGS__>=6&&__VA_ARGS__<NUM_BLOCK_TYPES)
+#define NUM_BLOCK_TYPES 4
+#define IS_SOLID(...) (__VA_ARGS__>=1&&__VA_ARGS__<2)
+#define IS_LIQUID(...) (__VA_ARGS__>=2&&__VA_ARGS__<3)
+#define IS_GAS(...) (__VA_ARGS__>=3&&__VA_ARGS__<NUM_BLOCK_TYPES)
 
 #define MOVE_UP 1
 #define MOVE_DOWN 2

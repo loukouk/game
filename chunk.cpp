@@ -7,7 +7,7 @@ matrix Chunk::create_blocks(int xsz, int ysz)
 
 	for (matrix::iterator it0 = blocks_matrix.begin(); it0 != blocks_matrix.end(); ++it0) {
 		for (submatrix::iterator it1 = it0->begin(); it1 != it0->end(); ++it1) {
-			id = rand() % NUM_BLOCK_TYPES;
+			id = (rand() % (NUM_BLOCK_TYPES-1)) + 1;
 			if (IS_SOLID(id))
 				*it1 = new Solid(id);
 			else if (IS_LIQUID(id))
@@ -59,7 +59,17 @@ void Chunk::print_chunk()
 
 	for(unsigned int j = 0; j < blocks.begin()->size(); j++) {
 		for (unsigned int i = 0 ; i < blocks.size(); i++) {
-			cout << (*(it[i]))->get_id() << "\t";
+//			cout << (*(it[i]))->get_id() << "\t";
+			if ( (*(it[i]))->get_id() == -1)
+				cout << "8 ";
+			if ( (*(it[i]))->get_id() == 0)
+				cout << "  ";
+			if ( (*(it[i]))->get_id() == 1)
+				cout << "# ";
+			if ( (*(it[i]))->get_id() == 2)
+				cout << "~ ";
+			if ( (*(it[i]))->get_id() == 3)
+				cout << ". ";
 			it[i]++;
 		}
 		cout << endl;

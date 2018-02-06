@@ -25,7 +25,7 @@ all: ${CPPOBJS}
 	${CXX} ${CPPFLAGS} ${CPPOBJS} -o Prog
 
 test:
-	${CXX} ${CPPFLAGS} test.cpp
+	${CXX} ${CPPFLAGS} test.cpp -lpthread
 	
 
 clean:

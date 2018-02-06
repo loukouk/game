@@ -16,5 +16,6 @@ int main ()
 	srand(time(NULL));
 	Universe u;
 	Player p1(&u);
-	return p1.play();
+//	return p1.play();
+	return p1.play_real_time();
 }

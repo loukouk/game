@@ -87,6 +87,48 @@ int Player::play()
 	return 0;
 }
 
+int Player::play_real_time()
+{
+	char buf;
+	fd_set read_set;
+	struct timespec tv = { INPUT_TIMEOUT_S, INPUT_TIMEOUT_NS};
+
+
+	while(1) {
+
+		cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" << endl;
+		print_chunk();
+		cout << "\nplayer x,y: " << block_xpos << "," << block_ypos << endl;
+		cout << endl << "> ";
+
+		FD_ZERO(&read_set);
+		FD_SET(STDIN_FILENO, &read_set);
+		if (pselect(STDIN_FILENO+1, &read_set, NULL, NULL, &tv, NULL) < 0)
+			perror("pselect() - timeout failed");
+		cout << "pselect done" << endl;
+
+		if (FD_ISSET(STDIN_FILENO, &read_set)) {
+//			fgets(&buf, 1, stdin);
+			cout << "WE\nARE\nHERE" << endl;
+			buf = getchar();
+			cin.ignore(numeric_limits<streamsize>::max(), EOF);
+			cout << endl << buf << endl;
+			if (buf == 'w')
+				move(MOVE_UP);
+			else if (buf == 's')
+				move(MOVE_DOWN);
+			else if (buf == 'a')
+				move(MOVE_LEFT);
+			else if (buf == 'd')
+				move(MOVE_RIGHT);
+			else if (buf == '0')
+				break;
+		}
+	}
+
+	return 0;
+}
+
 void Player::print_chunk()
 {
 	cur_chunk->print_chunk();
@@ -126,7 +168,7 @@ Player::Player(Universe *u_ptr)
 
 int Player::add_to_inventory(int item, int amount)
 {
-	if (item < 0 || item >= NUM_BLOCK_TYPES)
+	if (item <= 0 || item >= NUM_BLOCK_TYPES)
 		return 1;
 
 	inventory[item] += amount;
